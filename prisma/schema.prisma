@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  auth         Auth?
+  active       Boolean? @default(true)
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+  // verified Boolean? @default(false) /* Use this field for email verification logic */
+
+  @@index([id, email])
+  @@map("users")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  auth         Auth?
+  active       Boolean? @default(true)
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+  // level Int @@default(1) /* Use this field for admin level controller 1 = viewer; 2 = editor (soft-delete); 3 = owner (hard-delete) */
+  // department /* can apply as necessary if business logic requires */
+
+  @@index([id, email])
+  @@map("admins")
+}
+
+model Auth {
+  id       String  @id @default(cuid())
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   String? @unique @map("user_id")
+  admin    Admin?  @relation(fields: [adminId], references: [id])
+  adminId  String? @unique @map("admin_id")
+  password String  @map("password_hash")
+
+  @@index([userId, adminId])
+  @@map("auth")
+}
