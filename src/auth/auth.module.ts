@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LibModule } from '@/lib/lib. module';
+import { LibModule } from '@/lib/lib.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AdminLocalStrategy, UserLocalStrategy } from './local.strategy';
